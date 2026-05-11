@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # HopeGuard AI 🛡️
 ### Plateforme Intelligente de Suivi Oncologique
 
@@ -63,7 +62,7 @@ HopeGuard-AI/
 
 ### Étapes
 1. Cloner le repo  
-   `git clone https://github.com/nawarring/HopeGuard-AI`  
+   `git clone https://github.com/nawarring-hue/HopeGuard-Ai.git`  
    `cd HopeGuard-AI`
 
 2. Installer les dépendances  
@@ -105,7 +104,3 @@ HopeGuard-AI/
 
 ## 📜 Licence
 Projet académique — HopeGuard AI © 2025
-=======
-# HopeGuard-AI-
-Plateforme intelligente de suivi  │ │   des patients cancéreux - IA   
->>>>>>> 487c0bedee0b50001212c1b4bb70b4cb5831ada5
