@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HopeGuard AI — Plateforme intelligente de suivi oncologique</title>
+  <meta name="description" content="HopeGuard AI : plateforme médicale intelligente de suivi des patients en oncologie. Analyse IA, prédiction de risque et accompagnement personnalisé." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- ══════════════ LOADING SCREEN ══════════════ -->
+<div id="loading-screen">
+  <svg class="loading-icon" viewBox="0 0 64 64" fill="none">
+    <defs>
+      <linearGradient id="gradLoad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#38BDF8"/>
+        <stop offset="100%" stop-color="#F472B6"/>
+      </linearGradient>
+    </defs>
+    <path d="M32 6 L52 14 V32 C52 44 42 54 32 58 C22 54 12 44 12 32 V14 Z"
+          stroke="url(#gradLoad)" stroke-width="3" stroke-linejoin="round" fill="none"/>
+    <path d="M32 22 V42 M22 32 H42" stroke="url(#gradLoad)" stroke-width="3" stroke-linecap="round"/>
+  </svg>
+  <h1 class="loading-title">HopeGuard AI</h1>
+  <p class="loading-subtitle">Plateforme intelligente de suivi oncologique</p>
+  <div class="loading-bar-wrap"><div class="loading-bar-fill"></div></div>
+  <p class="loading-status">Initialisation sécurisée…</p>
+</div>
+
+<!-- ══════════════ NAVBAR ══════════════ -->
+<nav class="navbar" id="navbar">
+  <div class="hamburger" id="hamburger" aria-label="Menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </div>
+  <a href="#" class="nav-left" onclick="goPublic(); return false;">
+    <svg class="logo-svg" viewBox="0 0 32 32" fill="none">
+      <path d="M16 3 L26 7 V16 C26 22 21 27 16 29 C11 27 6 22 6 16 V7 Z" fill="#003087"/>
+      <path d="M16 11 V21 M11 16 H21" stroke="#38BDF8" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <div class="brand-name">HopeGuard</div>
+      <span class="brand-tag">AI Médical</span>
+    </div>
+  </a>
+
+  <div class="nav-center" id="navCenter">
+    <a href="#" class="nav-link active" data-public="home">Accueil</a>
+    <a href="#" class="nav-link" data-public="about">À propos</a>
+    <a href="#" class="nav-link" data-public="services">Services</a>
+    <a href="#" class="nav-link" data-public="contact">Contact</a>
+  </div>
+
+  <div class="nav-right" id="navRightPublic">
+    <button class="btn btn-secondary" onclick="goLogin()">Se connecter</button>
+    <button class="btn btn-primary" onclick="goLogin(true)">Demander un accès</button>
+  </div>
+
+  <div class="nav-right" id="navRightConnected" style="display:none;">
+    <button class="nav-bell" id="navBell" aria-label="Notifications">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="badge" id="bellBadge">3</span>
+    </button>
+    <div class="nav-divider"></div>
+    <div class="nav-user" id="navUser">
+      <div class="avatar" id="navAvatar">SA</div>
+      <span class="nav-user-name" id="navUserName">Sara Alami</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      <div class="user-dropdown" id="userDropdown">
+        <a href="#" onclick="showSection('profil');return false;">Mon profil</a>
+        <a href="#" onclick="showSection('parametres');return false;">Paramètres</a>
+        <hr/>
+        <a href="#" onclick="logout();return false;">Déconnexion</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Secondary nav (medical pages) -->
+<div class="secondary-nav" id="secondaryNav">
+  <div class="secondary-nav-inner">
+    <a href="#" data-section="dashboard" class="active">Tableau de bord</a>
+    <a href="#" data-section="dossier">Mon dossier</a>
+    <a href="#" data-section="irm">Analyse IRM</a>
+    <a href="#" data-section="symptomes">Mes symptômes</a>
+    <a href="#" data-section="ordonnances">Ordonnances</a>
+    <a href="#" data-section="equipe">Mon équipe médicale</a>
+  </div>
+</div>
+
+<!-- ══════════════ PUBLIC HOME ══════════════ -->
+<main class="public-page" id="publicPage">
+  <section class="hero">
+    <div class="hero-banner">
+      Nouveau : Analyse IRM par IA disponible <a href="#" onclick="goLogin();return false;">→ En savoir plus</a>
+    </div>
+    <div class="hero-inner">
+      <h1>Votre santé, notre priorité absolue</h1>
+      <p class="lead">HopeGuard AI analyse vos symptômes, prédit les risques et accompagne chaque étape de votre parcours oncologique.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary btn-large" onclick="goLogin()">Accéder à mon espace</button>
+        <button class="btn btn-outline btn-large" onclick="document.getElementById('conditions').scrollIntoView({behavior:'smooth'})">En savoir plus</button>
+      </div>
+      <div class="hero-stats">
+        <div><div class="stat-num">4</div><div class="stat-label">Modèles IA entraînés</div></div>
+        <div><div class="stat-num">⏱</div><div class="stat-label">Analyse IRM en temps réel</div></div>
+        <div><div class="stat-num">24/7</div><div class="stat-label">Suivi personnalisé</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="tabs-bar">
+    <div class="tabs-inner">
+      <a class="tab-link active" href="#conditions">🔍 Symptômes &amp; Causes</a>
+      <a class="tab-link" href="#conditions">🧪 Diagnostic &amp; Traitement</a>
+      <a class="tab-link" href="#conditions">👨‍⚕️ Médecins &amp; Équipe</a>
+      <a class="tab-link" href="#conditions">🏥 Suivi &amp; Soins</a>
+    </div>
+  </div>
+
+  <section class="section" id="conditions">
+    <div class="section-header">
+      <h2>Pathologies suivies par HopeGuard AI</h2>
+      <p>Notre plateforme accompagne le parcours de soin de plusieurs pathologies oncologiques avec un suivi adapté et des recommandations personnalisées.</p>
+    </div>
+    <div class="condition-grid" id="conditionGrid"></div>
+  </section>
+
+  <section class="dict-section" id="dictionnaireSection">
+    <div class="section-header">
+      <h2>Encyclopédie des symptômes</h2>
+      <p>Comprendre votre corps — recherchez un symptôme pour découvrir ses causes possibles, sa gravité et savoir quand consulter.</p>
+    </div>
+
+    <div class="dict-search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input type="text" id="dictSearch" class="dict-search" placeholder="Rechercher un symptôme, une condition..." />
+      <div class="dict-results-dropdown" id="dictResults"></div>
+    </div>
+
+    <div class="alpha-nav" id="alphaNav"></div>
+
+    <div class="symptom-grid" id="symptomGrid"></div>
+  </section>
+</main>
+
+<!-- ══════════════ LOGIN PAGE ══════════════ -->
+<main class="login-page" id="loginPage">
+  <div class="login-grid">
+    <div class="login-left">
+      <div class="brand-block">
+        <h2>HopeGuard AI</h2>
+        <p>Une plateforme médicale intelligente, conçue pour vous accompagner à chaque instant.</p>
+        <ul class="login-features">
+          <li>Analyse IA de vos données cliniques</li>
+          <li>4 modèles ML entraînés sur données médicales</li>
+          <li>Analyse IRM par intelligence artificielle</li>
+          <li>Suivi continu 24h/24</li>
+          <li>Alertes préventives automatiques</li>
+        </ul>
+        <div class="testimonial">
+          <p>« HopeGuard m'a aidée à mieux comprendre mon traitement et à rester sereine. »</p>
+          <cite>— Marie L., patiente en rémission, cancer du sein</cite>
+        </div>
+      </div>
+      <div class="security-badge">🔒 Données chiffrées · Conformité RGPD · Confidentialité totale</div>
+    </div>
+
+    <div class="login-right">
+      <div class="flip-card" id="flipCard">
+
+        <!-- LOGIN -->
+        <div class="flip-face flip-front">
+          <h2>Bon retour 👋</h2>
+          <p class="subtitle">Connectez-vous pour accéder à votre espace santé.</p>
+          <form id="loginForm">
+            <div class="form-row">
+              <label>Adresse e-mail</label>
+              <input type="email" class="input" id="loginEmail" placeholder="vous@email.com" required />
+            </div>
+            <div class="form-row">
+              <label>Mot de passe</label>
+              <div class="password-wrap">
+                <input type="password" class="input" id="loginPwd" placeholder="••••••••" required />
+                <span class="toggle-pwd" onclick="togglePwd('loginPwd', this)">👁</span>
+              </div>
+            </div>
+            <a href="#" class="forgot-link">Mot de passe oublié ?</a>
+            <button type="submit" class="btn btn-primary btn-full btn-large">Se connecter</button>
+          </form>
+          <div class="form-divider">OU</div>
+          <button class="btn btn-outline btn-full" onclick="loginDemo()">Accès démonstration</button>
+          <a class="flip-link" onclick="document.getElementById('flipCard').classList.add('flipped')">Pas de compte ? Créer un compte →</a>
+        </div>
+
+        <!-- SIGNUP -->
+        <div class="flip-face flip-back">
+          <h2>Créer mon espace santé 💙</h2>
+          <p class="subtitle">Quelques informations pour démarrer.</p>
+          <form id="signupForm">
+            <div class="form-row-grid">
+              <div class="form-row"><label>Prénom</label><input class="input-box" id="signupPrenom" required /></div>
+              <div class="form-row"><label>Nom</label><input class="input-box" id="signupNom" required /></div>
+            </div>
+            <div class="form-row"><label>Email</label><input type="email" class="input-box" id="signupEmail" required /></div>
+            <div class="form-row-grid">
+              <div class="form-row"><label>Mot de passe</label><input type="password" class="input-box" id="signupPwd" required /></div>
+              <div class="form-row"><label>Confirmation</label><input type="password" class="input-box" id="signupPwd2" required /></div>
+            </div>
+            <div class="form-row-grid">
+              <div class="form-row"><label>Date de naissance</label><input type="date" class="input-box" id="signupDob" /></div>
+              <div class="form-row"><label>Groupe sanguin</label>
+                <select class="input-box" id="signupBlood" style="height:42px;cursor:pointer;">
+                  <option value="">— Sélectionner —</option>
+                  <option>A+</option><option>A-</option>
+                  <option>B+</option><option>B-</option>
+                  <option>AB+</option><option>AB-</option>
+                  <option>O+</option><option>O-</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row"><label>Allergies connues <small style="color:#888;">(optionnel)</small></label><input class="input-box" id="signupAllergies" placeholder="ex : Pénicilline, Aspirine…" /></div>
+            <div class="form-row">
+              <label>Mon rôle</label>
+              <div class="role-pills" id="rolePills">
+                <span class="role-pill active" data-role="patient">Patient</span>
+                <span class="role-pill" data-role="medecin">Médecin</span>
+                <span class="role-pill" data-role="famille">Famille</span>
+                <span class="role-pill" data-role="chercheur">Chercheur</span>
+              </div>
+            </div>
+            <label class="checkbox-row">
+              <input type="checkbox" required />
+              <span>J'accepte la politique de confidentialité et le traitement sécurisé de mes données médicales.</span>
+            </label>
+            <button type="submit" class="btn btn-primary btn-full btn-large" style="background:linear-gradient(135deg,var(--navy),var(--blue-mid));">Créer mon compte</button>
+          </form>
+          <a class="flip-link navy" onclick="document.getElementById('flipCard').classList.remove('flipped')">← Déjà inscrit ? Se connecter</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ══════════════ APP SHELL (CONNECTED) ══════════════ -->
+<div class="app-shell" id="appShell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sideAvatar">SA</div>
+      <div class="sidebar-name" id="sideName">Sara Alami</div>
+      <span class="sidebar-role-pill" id="sideRole">Patient</span>
+      <div class="sidebar-id">ID : #HG-2024-0042</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Navigation principale</div>
+      <div class="sidebar-item active" data-section="dashboard"><span class="icon">🏠</span> Tableau de bord</div>
+      <div class="sidebar-item" data-section="dossier"><span class="icon">📋</span> Mon dossier médical</div>
+      <div class="sidebar-item" data-section="symptomes"><span class="icon">✍️</span> Décrire mes symptômes</div>
+      <div class="sidebar-item" data-section="irm"><span class="icon">🧠</span> Analyse IRM <span class="pill-badge">IA</span></div>
+      <div class="sidebar-item" data-section="suivi"><span class="icon">📊</span> Mon suivi &amp; graphiques</div>
+      <div class="sidebar-item" data-section="traitements"><span class="icon">💊</span> Mes traitements</div>
+      <div class="sidebar-item" data-section="alertes"><span class="icon">🔔</span> Alertes <span class="red-badge">3</span></div>
+      <div class="sidebar-item" data-section="equipe"><span class="icon">👥</span> Mon équipe médicale</div>
+      <div class="sidebar-item" data-section="dictionnaire"><span class="icon">📚</span> Dictionnaire médical</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Paramètres</div>
+      <div class="sidebar-item" data-section="profil"><span class="icon">⚙️</span> Mon profil</div>
+      <div class="sidebar-item" data-section="securite"><span class="icon">🔒</span> Sécurité &amp; confidentialité</div>
+      <div class="sidebar-item" data-section="contact"><span class="icon">📞</span> Contacter mon médecin</div>
+    </div>
+
+    <div class="sidebar-bottom">
+      <button onclick="logout()">↩ Déconnexion</button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="app-content" id="appContent">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <div class="breadcrumb"><a href="#">Accueil</a><span>></span><a href="#">Mon espace</a><span>></span>Tableau de bord</div>
+        <h1>Bonjour, <span id="dashFirstName">Sara</span></h1>
+        <div class="meta" id="dashDate"></div>
+      </div>
+
+      <div class="guardian-banner warning" id="guardianBanner">
+        🟡 Surveillance recommandée — Consultez dans les 48h
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric-card warning">
+          <div class="metric-num"><span id="metricRisk">49</span><span class="metric-trend up">↑ 4</span></div>
+          <div class="metric-label">Risk Score</div>
+        </div>
+        <div class="metric-card success">
+          <div class="metric-num">12 avr.</div>
+          <div class="metric-label">Dernière consultation</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">28 avr.</div>
+          <div class="metric-label">Prochain RDV — Dr Bennani</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">3</div>
+          <div class="metric-label">Traitements actifs</div>
+        </div>
+      </div>
+
+      <div class="dash-grid">
+        <div class="card">
+          <div class="card-head">
+            <h3>Score de Risque Prédictif</h3>
+            <span class="badge-ai">IA</span>
+          </div>
+          <p class="card-subtitle">Basé sur vos 4 modèles ML — Random Forest · KNN · Logistic Regression · SVM</p>
+          <div class="risk-gauge-wrap">
+            <div class="risk-gauge">
+              <svg viewBox="0 0 200 200">
+                <circle class="risk-gauge-bg" cx="100" cy="100" r="85"/>
+                <circle class="risk-gauge-fill" id="gaugeFill" cx="100" cy="100" r="85"
+                        stroke-dasharray="534" stroke-dashoffset="534"/>
+              </svg>
+              <div class="risk-score-text">
+                <div class="num" id="gaugeNum">49</div>
+                <div class="lbl">/ 100</div>
+              </div>
+            </div>
+            <span class="risk-pill warning" id="riskPill">Modéré</span>
+            <div class="risk-model">best_model.pkl — Random Forest</div>
+            <div class="risk-message" id="riskMessage">💪 Nous sommes là pour vous accompagner à chaque étape.</div>
+            <a href="#" style="margin-top:14px;font-weight:600;" onclick="showSection('suivi');return false;">Voir l'analyse détaillée →</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Mon état aujourd'hui</h3></div>
+          <div class="symptom-input" id="symptomInput">
+            <div class="slider-row" data-key="humeur">
+              <div class="row-head"><span class="lbl">Humeur</span><span class="val">1/5</span></div>
+              <div class="slider-track"></div>
+            </div>
+            <div class="slider-row" data-key="douleur">
+              <div class="row-head"><span class="lbl">Douleur</span><span class="val">2/5</span></div>
+              <div class="slider-track"></div>
+            </div>
+            <div class="slider-row" data-key="fatigue">
+              <div class="row-head"><span class="lbl">Fatigue</span><span class="val">2/5</span></div>
+              <div class="slider-track"></div>
+            </div>
+            <div class="slider-row" data-key="anxiete">
+              <div class="row-head"><span class="lbl">Anxiété</span><span class="val">1/5</span></div>
+              <div class="slider-track"></div>
+            </div>
+            <div class="toggle-row">Fièvre <div class="toggle-switch" data-toggle="fievre"></div></div>
+            <div class="toggle-row">Perte de poids <div class="toggle-switch" data-toggle="perte_poids"></div></div>
+            <div class="toggle-row">Essoufflement <div class="toggle-switch" data-toggle="essoufflement"></div></div>
+            <button class="btn btn-primary btn-full" onclick="enregistrerSymptomes()">Enregistrer</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card chart-card" style="margin-bottom:24px;">
+        <div class="card-head"><h3>Mon évolution — 7 derniers jours</h3></div>
+        <canvas id="evolutionChart"></canvas>
+      </div>
+
+      <div class="dash-grid">
+        <div class="card">
+          <div class="card-head"><h3>Recommandations personnalisées</h3><span class="badge-ai">IA</span></div>
+          <ul class="recommendation-list">
+            <li><span class="ico">💧</span> Hydratez-vous régulièrement (1,5 à 2L par jour) pour soutenir vos traitements.</li>
+            <li><span class="ico">🚶</span> Pratiquez une activité physique douce 20 minutes par jour.</li>
+            <li><span class="ico">😴</span> Veillez à un sommeil régulier de 7 à 8 heures.</li>
+            <li><span class="ico">🥗</span> Privilégiez une alimentation riche en protéines et fruits frais.</li>
+            <li><span class="ico">🧘</span> Prenez 10 minutes de respiration consciente pour réduire l'anxiété.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Notifications médicales</h3></div>
+          <div class="timeline">
+            <div class="timeline-item"><div class="time">Il y a 2h</div><div class="msg">Nouveau message du Dr Bennani.</div></div>
+            <div class="timeline-item warn"><div class="time">Hier</div><div class="msg">Pensez à votre prise de sang du 28 avril.</div></div>
+            <div class="timeline-item"><div class="time">Lun. 21 avr.</div><div class="msg">Résultats IRM disponibles dans votre dossier.</div></div>
+            <div class="timeline-item danger"><div class="time">Ven. 18 avr.</div><div class="msg">Score de risque en hausse, surveillez vos symptômes.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SYMPTOMES -->
+    <div class="page" id="page-symptomes">
+      <div class="page-header">
+        <div class="breadcrumb"><a href="#">Accueil</a><span>></span>Décrire mes symptômes</div>
+        <h1>Décrire mes symptômes au médecin</h1>
+        <p class="meta">Décrivez vos symptômes en détail pour aider votre équipe médicale à mieux vous accompagner.</p>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <h3 style="margin-bottom:12px;">Description libre</h3>
+        <div class="textarea-wrap">
+          <textarea id="symptomTextarea" placeholder="Décrivez vos symptômes en détail...
+Exemple : Depuis 3 jours, je ressens une douleur intense dans le côté droit de l'abdomen, aggravée après les repas. J'ai également de la fatigue et des nausées le matin..."></textarea>
+          <div class="textarea-meta">
+            <span class="mic-btn" title="Dicter (démo)">🎙</span>
+            <span><span id="charCount">0</span> caractères</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <h3 style="margin-bottom:12px;">Ou sélectionnez depuis notre dictionnaire</h3>
+        <input type="text" class="input-box" id="quickSymptomFilter" placeholder="Rechercher rapidement…" />
+        <div class="tag-cloud" id="quickTagCloud"></div>
+        <div style="margin-top:18px;">
+          <div class="label" style="margin-bottom:8px;">Symptômes sélectionnés</div>
+          <div class="tag-cloud" id="selectedTagCloud"><span style="font-size:13px;color:var(--text-light);">Aucun symptôme sélectionné.</span></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <h3 style="margin-bottom:16px;">Informations complémentaires</h3>
+        <div class="form-grid-2">
+          <div class="form-row"><label>Depuis quand ?</label><input type="date" class="input-box" /></div>
+          <div class="form-row"><label>Intensité (1 → 10) <span id="intensityVal" style="color:var(--navy);font-weight:600;">5</span></label><input type="range" min="1" max="10" value="5" id="intensityRange" /></div>
+          <div class="form-row">
+            <label>Fréquence</label>
+            <div class="role-pills">
+              <span class="role-pill active">Permanent</span>
+              <span class="role-pill">Récurrent</span>
+              <span class="role-pill">Occasionnel</span>
+            </div>
+          </div>
+          <div class="form-row"><label>Facteur déclenchant</label><input type="text" class="input-box" placeholder="Ex : effort physique, repas..." /></div>
+          <div class="form-row" style="grid-column:span 2;"><label>Médicament(s) pris</label><textarea class="input-box" rows="3" placeholder="Liste des médicaments avec posologie..."></textarea></div>
+          <div class="form-row" style="grid-column:span 2;">
+            <label>Localisation</label>
+            <svg class="body-svg" viewBox="0 0 200 380">
+              <ellipse class="body-zone" data-zone="tete" cx="100" cy="38" rx="26" ry="32"/>
+              <rect class="body-zone" data-zone="thorax" x="65" y="80" width="70" height="80" rx="10"/>
+              <rect class="body-zone" data-zone="abdomen" x="70" y="160" width="60" height="70" rx="8"/>
+              <rect class="body-zone" data-zone="bras-g" x="35" y="85" width="22" height="100" rx="11"/>
+              <rect class="body-zone" data-zone="bras-d" x="143" y="85" width="22" height="100" rx="11"/>
+              <rect class="body-zone" data-zone="jambe-g" x="72" y="235" width="24" height="130" rx="12"/>
+              <rect class="body-zone" data-zone="jambe-d" x="104" y="235" width="24" height="130" rx="12"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <h3 style="margin-bottom:12px;">Documents liés</h3>
+        <div class="upload-drop">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <p>Glissez vos documents ici (ordonnances, résultats…)<br/>Formats : PDF, JPG, PNG</p>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-full btn-large" onclick="envoyerAuMedecin()">Envoyer au médecin</button>
+
+      <div style="margin-top:32px;">
+        <h3 style="margin-bottom:12px;color:var(--navy);">Historique des descriptions</h3>
+        <table class="history-table">
+          <thead><tr><th>Date</th><th>Symptômes</th><th>Médecin notifié</th><th>Statut</th></tr></thead>
+          <tbody>
+            <tr><td>22 avr. 2026</td><td>Fatigue, Nausées</td><td>Dr Bennani</td><td><span class="status-pill read">Lu</span></td></tr>
+            <tr><td>15 avr. 2026</td><td>Douleur abdominale</td><td>Dr Bennani</td><td><span class="status-pill read">Lu</span></td></tr>
+            <tr><td>08 avr. 2026</td><td>Anxiété, Insomnie</td><td>Dr Naciri</td><td><span class="status-pill sent">Envoyé</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- IRM -->
+    <div class="page" id="page-irm">
+      <div class="page-header">
+        <div class="breadcrumb"><a href="#">Accueil</a><span>></span>Analyse IRM</div>
+        <h1>Analyse IRM par Intelligence Artificielle</h1>
+      </div>
+
+      <div class="disclaimer">ℹ️ Cet outil est une aide au diagnostic. Il ne remplace pas l'avis d'un radiologue qualifié.</div>
+
+      <div class="tab-bar">
+        <button class="active" data-irmtab="new">Nouvelle analyse</button>
+        <button data-irmtab="list">Mes analyses</button>
+        <button data-irmtab="learn">Comprendre l'IRM</button>
+      </div>
+
+      <div class="tab-pane active" id="irm-new">
+        <div class="card" style="margin-bottom:20px;">
+          <h3 style="margin-bottom:14px;">Informations contextuelles</h3>
+          <div class="irm-info-grid">
+            <div class="form-row">
+              <label>Type d'IRM</label>
+              <div class="role-pills" id="irmType">
+                <span class="role-pill active">Cérébrale</span>
+                <span class="role-pill">Mammographie</span>
+                <span class="role-pill">Abdominale</span>
+                <span class="role-pill">Rachis</span>
+              </div>
+            </div>
+            <div class="form-row"><label>Médecin prescripteur</label><input class="input-box" placeholder="Dr ..." /></div>
+            <div class="form-row"><label>Date de l'IRM</label><input type="date" class="input-box" /></div>
+            <div class="form-row"><label>Notes</label><input class="input-box" placeholder="Contexte, antécédents..." /></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="upload-drop" id="irmDrop">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/>
+            </svg>
+            <p style="font-size:15px;color:var(--text-dark);font-weight:600;margin-top:10px;">Glissez votre image IRM ici ou cliquez pour sélectionner</p>
+            <p>Formats acceptés : JPEG, PNG, DICOM · Taille max : 25 Mo</p>
+            <button class="btn btn-outline" style="margin-top:14px;">Sélectionner un fichier</button>
+            <input type="file" id="irmFile" accept="image/*" style="display:none;" />
+          </div>
+          <div id="irmScanArea" style="display:none;">
+            <div class="scan-container">
+              <img id="irmPreview" alt="IRM uploadée" />
+              <div class="scan-grid"></div>
+              <div class="scan-line"></div>
+            </div>
+            <div class="scan-status" id="scanStatus">Détection des zones…</div>
+            <div class="progress-bar"><div class="progress-fill" id="scanProgress" style="width:0%"></div></div>
+          </div>
+          <div id="irmResults" style="display:none;"></div>
+        </div>
+      </div>
+
+      <div class="tab-pane" id="irm-list">
+        <table class="history-table">
+          <thead><tr><th>Date</th><th>Type</th><th>Médecin</th><th>Anomalies</th><th>Urgence</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td>20 avr. 2026</td><td>Mammographie</td><td>Dr Bennani</td><td>1 zone</td><td><span class="gravity-badge gravity-modere">Modérée</span></td><td><a href="#">Voir →</a></td></tr>
+            <tr><td>05 mars 2026</td><td>Cérébrale</td><td>Dr Naciri</td><td>0</td><td><span class="gravity-badge gravity-faible">Aucune</span></td><td><a href="#">Voir →</a></td></tr>
+            <tr><td>12 janv. 2026</td><td>Abdominale</td><td>Dr Bennani</td><td>2 zones</td><td><span class="gravity-badge gravity-eleve">Élevée</span></td><td><a href="#">Voir →</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tab-pane" id="irm-learn">
+        <div class="card">
+          <h3 style="color:var(--navy);">Qu'est-ce qu'une IRM ?</h3>
+          <p style="margin:12px 0;color:var(--text-dark);">L'imagerie par résonance magnétique (IRM) est une technique d'imagerie médicale non invasive qui utilise un champ magnétique puissant pour produire des images détaillées des organes et tissus internes.</p>
+          <h3 style="color:var(--navy);margin-top:16px;">Comment lire les résultats</h3>
+          <p style="margin:12px 0;color:var(--text-dark);">Notre IA met en évidence les zones nécessitant une attention particulière (cercles rouges) et fournit une analyse contextuelle. Le radiologue reste le seul à valider le diagnostic.</p>
+          <h3 style="color:var(--navy);margin-top:16px;">Foire aux questions</h3>
+          <div class="faq-item"><div class="faq-q">L'IRM est-elle douloureuse ?</div><div class="faq-a">Non, l'examen est totalement indolore. Vous entendrez seulement le bruit de la machine.</div></div>
+          <div class="faq-item"><div class="faq-q">Combien de temps dure l'examen ?</div><div class="faq-a">Entre 15 et 45 minutes selon la zone à examiner.</div></div>
+          <div class="faq-item"><div class="faq-q">Comment se préparer ?</div><div class="faq-a">Retirez tout objet métallique. Suivez les consignes de jeûne si demandées.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DICTIONNAIRE -->
+    <div class="page" id="page-dictionnaire">
+      <div class="page-header">
+        <h1>Dictionnaire médical des symptômes</h1>
+        <p class="meta">Recherchez et explorez les symptômes pour mieux comprendre votre santé.</p>
+      </div>
+      <div class="card">
+        <div class="dict-search-wrap" style="margin:0 0 20px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="text" id="dictSearch2" class="dict-search" placeholder="Rechercher un symptôme..." />
+        </div>
+        <div class="alpha-nav" id="alphaNav2"></div>
+        <div class="symptom-grid" id="symptomGrid2"></div>
+      </div>
+    </div>
+
+    <!-- Pages génériques -->
+    <div class="page" id="page-dossier">
+      <div class="page-header"><h1>Mon dossier médical</h1><p class="meta">Consultez et gérez l'ensemble de vos informations médicales.</p></div>
+      <div class="card">
+        <h3>Informations personnelles</h3>
+        <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;">
+          <div><div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;">Nom</div><strong id="dossierNom">—</strong></div>
+          <div><div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;">Prénom</div><strong id="dossierPrenom">—</strong></div>
+          <div><div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;">Email</div><span id="dossierEmail">—</span></div>
+          <div><div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;">Rôle</div><span id="dossierRole">—</span></div>
+          <div><div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;">Date de naissance</div><span id="dossierDob">—</span></div>
+          <div><div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;">Groupe sanguin</div><span id="dossierBlood">—</span></div>
+          <div style="grid-column:1/-1;"><div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;">Allergies connues</div><span id="dossierAllergies">—</span></div>
+          <div><div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;">ID Patient</div><span id="dossierPatientId" style="font-family:monospace;font-size:13px;">—</span></div>
+          <div><div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;">Membre depuis</div><span id="dossierDate">—</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="page" id="page-suivi">
+      <div class="page-header"><h1>Mon suivi &amp; graphiques</h1></div>
+      <div class="card chart-card"><h3>Évolution sur 30 jours</h3><canvas id="suiviChart"></canvas></div>
+    </div>
+    <div class="page" id="page-traitements">
+      <div class="page-header"><h1>Mes traitements</h1></div>
+      <div class="card"><h3>Traitements actifs</h3>
+        <ul style="margin-top:12px;list-style:none;">
+          <li style="padding:10px 0;border-bottom:1px solid var(--border);">💊 <strong>Tamoxifène</strong> — 20 mg/jour</li>
+          <li style="padding:10px 0;border-bottom:1px solid var(--border);">💉 <strong>Trastuzumab</strong> — toutes les 3 semaines</li>
+          <li style="padding:10px 0;">🧴 <strong>Crème hydratante</strong> — 2× par jour</li>
+        </ul>
+      </div>
+    </div>
+    <div class="page" id="page-alertes">
+      <div class="page-header"><h1>Mes alertes</h1></div>
+      <div class="card"><div class="timeline">
+        <div class="timeline-item danger"><div class="time">Aujourd'hui</div><div class="msg">Score de risque en augmentation — surveillez vos symptômes.</div></div>
+        <div class="timeline-item warn"><div class="time">Hier</div><div class="msg">Rappel : prise de sang programmée le 28 avril.</div></div>
+        <div class="timeline-item"><div class="time">21 avr.</div><div class="msg">Résultats IRM disponibles.</div></div>
+      </div></div>
+    </div>
+    <div class="page" id="page-equipe">
+      <div class="page-header"><h1>Mon équipe médicale</h1></div>
+      <div class="condition-grid">
+        <div class="condition-card"><div class="condition-icon">👨‍⚕️</div><h3>Dr Bennani</h3><p>Oncologue référent · CHU Casablanca</p><a class="condition-link" href="#">Contacter →</a></div>
+        <div class="condition-card"><div class="condition-icon">👩‍⚕️</div><h3>Dr Naciri</h3><p>Psycho-oncologue · Suivi émotionnel</p><a class="condition-link" href="#">Contacter →</a></div>
+        <div class="condition-card"><div class="condition-icon">🧑‍⚕️</div><h3>Mme Tazi</h3><p>Infirmière coordinatrice</p><a class="condition-link" href="#">Contacter →</a></div>
+      </div>
+    </div>
+    <div class="page" id="page-profil">
+      <div class="page-header"><h1>Mon profil</h1></div>
+      <div class="card"><p>Modifiez vos informations personnelles et vos préférences.</p></div>
+    </div>
+    <div class="page" id="page-securite">
+      <div class="page-header"><h1>Sécurité &amp; confidentialité</h1></div>
+      <div class="card"><p>Vos données sont chiffrées et conformes au RGPD. Gérez vos préférences ici.</p></div>
+    </div>
+    <div class="page" id="page-contact">
+      <div class="page-header"><h1>Contacter mon médecin</h1></div>
+      <div class="card"><p>Envoyez un message direct à votre équipe médicale.</p>
+        <textarea class="input-box" rows="6" style="margin-top:12px;" placeholder="Votre message..."></textarea>
+        <button class="btn btn-primary" style="margin-top:12px;" onclick="toast('Message envoyé','Votre médecin sera notifié rapidement.','success')">Envoyer</button>
+      </div>
+    </div>
+    <div class="page" id="page-ordonnances">
+      <div class="page-header"><h1>Mes ordonnances</h1></div>
+      <div class="card"><p>Vos ordonnances numériques apparaîtront ici.</p></div>
+    </div>
+    <div class="page" id="page-parametres">
+      <div class="page-header"><h1>Paramètres</h1></div>
+      <div class="card"><p>Préférences de notifications, langue, etc.</p></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Symptom modal -->
+<div class="modal-overlay" id="symptomModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modalTitle">—</h2>
+      <span class="modal-close" onclick="closeModal()">✕</span>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closeModal()">Fermer</button>
+      <button class="btn btn-primary" onclick="signalerSymptomeFromModal()">Signaler ce symptôme</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-stack" id="toastStack"></div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
